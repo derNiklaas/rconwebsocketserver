@@ -1,5 +1,5 @@
 const Rcon = require('modern-rcon');
-const rcon = new Rcon("IP ADRESS HERE", 25575, "PASSWORD HERE", 5000);
+const rcon = new Rcon("IP ADDRESS HERE", 25575, "PASSWORD HERE", 5000);
 
 
 const ws = require('ws');
