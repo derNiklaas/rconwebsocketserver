@@ -12,18 +12,49 @@ webSocketServer.on('connection', (webSocket) => {
                 process.exit(0);
             });
         } else {
-            if (isReady) {
-                rcon.send(message).then((result) => {
-                    webSocket.send(result);
-                    console.log(result);
-                });
-            }
+            queue.push(message);
         }
     });
 });
+
+const queue = [];
+
+async function startQueue() {
+    while (true) {
+        if (queue.length !== 0) {
+            console.log("test");
+            const command = queue.shift();
+            sendCommand(command);
+        }
+        await sleep(25);
+    }
+}
+
+async function sendCommand(command) {
+    if (isReady) {
+        if (isReady) {
+            rcon.send(command).then((result) => {
+                webSocketServer.clients.forEach(webSocket => webSocket.send(result));
+                console.log(result);
+            }).catch((error) => {
+                console.log("There was an error. " + error);
+                isReady = false;
+            });
+        }
+    }
+}
+
+/**
+ * Just a sleep method.
+ * @param ms the amount of milliseconds that the program should wait.
+ */
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 let isReady = false;
 
 rcon.connect().then(() => {
     isReady = true;
+    startQueue();
 });
