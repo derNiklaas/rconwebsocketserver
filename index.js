@@ -22,7 +22,6 @@ const queue = [];
 async function startQueue() {
     while (true) {
         if (queue.length !== 0) {
-            console.log("test");
             const command = queue.shift();
             sendCommand(command);
         }
@@ -32,15 +31,13 @@ async function startQueue() {
 
 async function sendCommand(command) {
     if (isReady) {
-        if (isReady) {
-            rcon.send(command).then((result) => {
-                webSocketServer.clients.forEach(webSocket => webSocket.send(result));
-                console.log(result);
-            }).catch((error) => {
-                console.log("There was an error. " + error);
-                isReady = false;
-            });
-        }
+        rcon.send(command).then((result) => {
+            webSocketServer.clients.forEach(webSocket => webSocket.send(result));
+            console.log(result);
+        }).catch((error) => {
+            console.log("There was an error. " + error);
+            isReady = false;
+        });
     }
 }
 
